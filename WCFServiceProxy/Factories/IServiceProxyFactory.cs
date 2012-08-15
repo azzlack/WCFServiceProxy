@@ -7,7 +7,7 @@
     /// Generated proxies closes gracefully.
     /// </summary>
     /// <typeparam name="TProxy">The service interface.</typeparam>
-    public interface IServiceProxyFactory<out TProxy> where TProxy : class
+    public interface IServiceProxyFactory<TProxy> where TProxy : class
     {
         /// <summary>
         /// Using statement for proxy.

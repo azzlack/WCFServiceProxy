@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EyeCatch.WCF.ServiceProxy</RootNamespace>
     <AssemblyName>EyeCatch.WCF.ServiceProxy</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -48,7 +48,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY $(TargetDir)$(TargetName).* $(SolutionDir)NuGetPackager\lib\net40\ /s /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY $(TargetDir)$(TargetName).* $(SolutionDir)NuGetPackager\lib\net35\ /s /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

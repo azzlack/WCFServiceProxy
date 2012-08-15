@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WCFServiceProxy")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("WCF Service Proxy")]
+[assembly: AssemblyDescription("Service proxy for consuming WCF services")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WCFServiceProxy")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyProduct("EyeCatch.WCF.ServiceProxy")]
+[assembly: AssemblyCopyright("Copyright © EyeCatch 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
