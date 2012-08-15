@@ -1,6 +1,6 @@
 # WCF Service Proxy #
 
----
+=====================================
 
 Service proxy for consuming WCF services.
 

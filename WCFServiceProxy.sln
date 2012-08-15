@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFServiceProxy", "WCFServiceProxy\WCFServiceProxy.csproj", "{FC3F27AA-24FD-4471-B39C-1A489F8D38B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetPackager", "NuGetPackager\NuGetPackager.csproj", "{0451BAEF-DF2E-4B98-8644-94EE9415E389}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC3F27AA-24FD-4471-B39C-1A489F8D38B2} = {FC3F27AA-24FD-4471-B39C-1A489F8D38B2}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC3F27AA-24FD-4471-B39C-1A489F8D38B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC3F27AA-24FD-4471-B39C-1A489F8D38B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC3F27AA-24FD-4471-B39C-1A489F8D38B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC3F27AA-24FD-4471-B39C-1A489F8D38B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

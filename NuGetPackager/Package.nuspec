@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>WCFServiceProxy</id>
+    <title>WCF Service Proxy</title>
+    <version>1.0.0</version>
+    <authors>Ove Andersen</authors>
+    <owners>EyeCatch</owners>
+    <projectUrl>http://www.eyecatch.no/projects/wcf-service-proxy/</projectUrl>
+    <iconUrl>http://www.eyecatch.no/favicon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+        Service proxy for consuming WCF services.
+    </description>
+    <releaseNotes>
+    </releaseNotes>
+    <copyright>Copyright EyeCatch 2012</copyright>
+    <tags>wcf service proxy</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="lib\**" target="lib" />
+    <file src="tools\**" target="tools" />
+    <file src="content\**" target="content" />
+  </files>
+</package>
