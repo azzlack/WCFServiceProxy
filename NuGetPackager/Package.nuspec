@@ -2,30 +2,31 @@
 <package >
   <metadata>
     <id>WCFServiceProxy</id>
-    <title>WCF Service Proxy</title>
-    <version>1.0.0</version>
+    <title>WCF/SOAP Service Client Wrapper</title>
+    <version>2.0.0</version>
     <authors>Ove Andersen</authors>
     <owners>EyeCatch</owners>
-    <projectUrl>http://www.eyecatch.no/projects/wcf-service-proxy/</projectUrl>
+    <projectUrl>https://github.com/azzlack/WCFServiceProxy</projectUrl>
     <iconUrl>http://www.eyecatch.no/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        Service proxy for consuming WCF services.
+      Service proxy for consuming WCF/SOAP services.
 
-        This proxy solves some common problems when dealing with Windows Communication Foundation services.
+      This proxy solves some common problems when dealing with SOAP-based Windows Communication Foundation services.
 
-        Features:
-        * Auto-closing of client
-        * Automatic client and channel disposing
-        * Handles all types of exceptions
-        * Error tracing
-        
-        This completely replaces the "Add Service Reference" functionality. That means your WCF service must implement an interface, and the same interface must bu available for your client application.
+      Features:
+      * Auto-closing of client
+      * Automatic client and channel disposing
+      * Handles all types of exceptions
+      * Error tracing
+
+      This completely replaces the "Add Service Reference" functionality. That means your WCF service must implement an interface, and the same interface must bu available for your client application.
     </description>
     <releaseNotes>
+      Updated to use .NET 4.5
     </releaseNotes>
-    <copyright>Copyright EyeCatch 2012</copyright>
-    <tags>wcf service proxy</tags>
+    <copyright>Copyright EyeCatch 2014</copyright>
+    <tags>wcf soap service client proxy</tags>
     <dependencies>
     </dependencies>
   </metadata>

@@ -1,4 +1,4 @@
-﻿namespace EyeCatch.WCF.ServiceProxy.EventArguments
+﻿namespace EyeCatch.WCF.ServiceProxy
 {
     using System;
 

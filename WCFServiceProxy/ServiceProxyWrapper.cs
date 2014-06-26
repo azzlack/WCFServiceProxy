@@ -1,71 +1,60 @@
-﻿namespace EyeCatch.WCF.ServiceProxy.Factories
+﻿namespace EyeCatch.WCF.ServiceProxy
 {
     using System;
     using System.Diagnostics;
     using System.ServiceModel;
     using System.ServiceModel.Security;
     using System.Text;
-
-    using EyeCatch.WCF.ServiceProxy.EventArguments;
+    using System.Threading.Tasks;
 
     /// <summary>
-    /// Factory for generating WCF service proxies.
+    /// Wrapper for using service proxies.
     /// </summary>
-    /// <remarks>
-    /// Generated proxies always closes/disposes gracefully.
-    /// </remarks>
     /// <typeparam name="TProxy">The service interface.</typeparam>
-    public class ServiceProxyFactory<TProxy> : IServiceProxyFactory<TProxy> where TProxy : class
+    internal class ServiceProxyWrapper<TProxy> : IServiceProxyWrapper<TProxy> where TProxy : class
     {
-        /// <summary>
-        /// The proxy instance
-        /// </summary>
-        private static readonly ServiceProxyFactory<TProxy> Singleton = new ServiceProxyFactory<TProxy>();
-
-        /// <summary>
-        /// Prevents a default instance of the <see cref="ServiceProxyFactory&lt;TProxy&gt;"/> class from being created.
-        /// </summary>
-        private ServiceProxyFactory()
-        {
-        }
-
         /// <summary>
         /// The [error occured] event
         /// </summary>
-        public static event EventHandler<ServiceProxyErrorEventArgs> ErrorOccured;
+        public event EventHandler<ServiceProxyErrorEventArgs> ErrorOccured;
 
         /// <summary>
-        /// Gets the singleton instance.
+        /// Using statement for proxy.
         /// </summary>
-        public static ServiceProxyFactory<TProxy> Instance
+        /// <param name="callback">The code block to execute.</param>
+        public async Task Use(Func<TProxy, Task> callback)
         {
-            get
-            {
-                return Singleton;
-            }
+            await this.Use(typeof(TProxy).Name, callback);
         }
 
         /// <summary>
         /// Using statement for proxy.
         /// </summary>
         /// <param name="callback">The code block to execute.</param>
-        public void Use(Action<TProxy> callback)
+        /// <param name="error">The error callback.</param>
+        public async Task Use(Func<TProxy, Task> callback, Action<Exception> error)
         {
-            var channelFactory = new ChannelFactory<TProxy>(typeof(TProxy).Name);
-
-            this.Run(channelFactory, callback);
+            await this.Use(typeof(TProxy).Name, callback, error);
         }
 
         /// <summary>
         /// Using statement for proxy.
         /// </summary>
-        /// <param name="endPointConfigurationName">
-        /// (Optional) The service endpoint configuration name. Uses <typeparamref name="TProxy"/> if not specified.
-        /// </param>
-        /// <param name="callback">
-        /// The code block to execute.
-        /// </param>
-        public void Use(string endPointConfigurationName, Action<TProxy> callback)
+        /// <param name="endPointConfigurationName">(Optional) The service endpoint configuration name. Uses <typeparamref name="TProxy" /> if not specified.</param>
+        /// <param name="callback">The code block to execute.</param>
+        public async Task Use(string endPointConfigurationName, Func<TProxy, Task> callback)
+        {
+            await this.Use(endPointConfigurationName, callback, (ex) => this.OnErrorOccured(typeof(TProxy), ex));
+        }
+
+        /// <summary>
+        /// Using statement for proxy.
+        /// </summary>
+        /// <param name="endPointConfigurationName">(Optional) The service endpoint configuration name. Uses <typeparamref name="TProxy" /> if not specified.</param>
+        /// <param name="callback">The code block to execute.</param>
+        /// <param name="error">The error callback.</param>
+        /// <exception cref="System.ArgumentNullException">endPointConfigurationName</exception>
+        public async Task Use(string endPointConfigurationName, Func<TProxy, Task> callback, Action<Exception> error)
         {
             if (string.IsNullOrEmpty(endPointConfigurationName))
             {
@@ -74,7 +63,7 @@
 
             var channelFactory = new ChannelFactory<TProxy>(endPointConfigurationName);
 
-            this.Run(channelFactory, callback);
+            await this.Run(channelFactory, callback, error);
         }
 
         /// <summary>
@@ -98,9 +87,9 @@
             Trace.TraceError(message.ToString());
 
             // Throw event if there is a handler registered
-            if (ErrorOccured != null)
+            if (this.ErrorOccured != null)
             {
-                ErrorOccured(this, new ServiceProxyErrorEventArgs(typeof(TProxy), exception));
+                this.ErrorOccured(this, new ServiceProxyErrorEventArgs(typeof(TProxy), exception));
             }
         }
 
@@ -109,7 +98,8 @@
         /// </summary>
         /// <param name="channelFactory">The channel factory.</param>
         /// <param name="callback">The callback.</param>
-        private void Run(ChannelFactory<TProxy> channelFactory, Action<TProxy> callback)
+        /// <param name="error">The error callback.</param>
+        private async Task Run(ChannelFactory<TProxy> channelFactory, Func<TProxy, Task> callback, Action<Exception> error)
         {
             var proxy = (IClientChannel)channelFactory.CreateChannel();
 
@@ -117,7 +107,8 @@
 
             try
             {
-                callback((TProxy)proxy);
+                await callback((TProxy)proxy);
+
                 proxy.Close();
 
                 success = true;
@@ -130,49 +121,49 @@
                  * "Connection can not be established because it has been aborted"  
                  */
 
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 throw;
             }
             catch (CommunicationObjectFaultedException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort();
             }
             catch (MessageSecurityException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 throw;
             }
             catch (ChannelTerminatedException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort(); // Possibly retry? 
             }
             catch (ServerTooBusyException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort(); // Possibly retry? 
             }
             catch (EndpointNotFoundException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort(); // Possibly retry? 
             }
             catch (FaultException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort();
             }
             catch (CommunicationException ex)
             {
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort();
             }
@@ -186,7 +177,7 @@
                  * portion of a longer timeout. 
                  */
 
-                this.OnErrorOccured(typeof(TProxy), ex);
+                error(ex);
 
                 proxy.Abort();
             }
@@ -194,7 +185,8 @@
             {
                 // TODO: Handle this duplex callback exception. Occurs when client disappears.   
                 // Source: http://stackoverflow.com/questions/1427926/detecting-client-death-in-wcf-duplex-contracts/1428238#1428238 
-                this.OnErrorOccured(typeof(TProxy), ex);
+
+                error(ex);
             }
             finally
             {

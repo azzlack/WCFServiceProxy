@@ -1,10 +1,9 @@
-# WCF Service Proxy #
-
+WCF/SOAP Service Proxy
 =====================================
 
-Service proxy for consuming WCF services.
+Service proxy for consuming WCF/SOAP services.
 
-This proxy solves some common problems when dealing with Windows Communication Foundation services.
+This proxy solves some common problems when dealing with SOAP-based Windows Communication Foundation services.
 
 Features:
 - Auto-closing of client
@@ -14,3 +13,22 @@ Features:
 
 This completely replaces the "Add Service Reference" functionality. 
 That means your WCF service must implement an interface, and the same interface must bu available for your client application. 
+
+### How to use
+This wrapper is intended to mimic a `using` statement.
+
+```csharp
+// The simplest way to use it
+ServiceProxyFactory.Create<IMyServiceClientInterface>().Use(
+	async (client) => {
+		await client.GetDataAsync(); // Do your magic here
+	});
+
+// Custom error callback
+ServiceProxyFactory.Create<IMyServiceClientInterface>().Use(
+	async (client) => {
+		await client.GetDataAsync(); // Call the service endpoints here
+	}, (exception) => {
+		throw exception; // Do something if an error occurs
+	});
+```
