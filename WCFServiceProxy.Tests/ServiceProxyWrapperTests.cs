@@ -3,7 +3,6 @@
     using System;
     using System.ServiceModel;
     using System.ServiceModel.Description;
-    using System.Threading.Tasks;
 
     using EyeCatch.WCF.ServiceProxy;
 
@@ -51,30 +50,60 @@
         public void Use_WhenWrapperWorks_ShouldReturnClientAsParameter()
         {
             this.proxy.Use(
+                (client) =>
+                {
+                    client.GetData();
+
+                    Assert.IsAssignableFrom<IMockService>(client);
+                });
+        }
+
+        [Test]
+        public void Use_WhenWrapperThrowsError_ShouldEnterErrorCallback()
+        {
+            Exception error = null;
+
+            this.proxy.Use(
+                (client) =>
+                {
+                    client.GetError();
+                },
+                (ex) =>
+                {
+                    error = ex;
+                });
+
+            Assert.IsInstanceOf<FaultException>(error);
+        }
+
+        [Test]
+        public void UseAsync_WhenWrapperWorks_ShouldReturnClientAsParameter()
+        {
+            this.proxy.Use(
                 async (client) =>
                     {
-                        await client.GetDataAsync();
+                        await client.GetAsyncData();
 
                         Assert.IsAssignableFrom<IMockService>(client);
                     });
         }
 
         [Test]
-        public async void Use_WhenWrapperThrowsError_ShouldReturnEnterErrorCallback()
+        public async void UseAsync_WhenWrapperThrowsError_ShouldEnterErrorCallback()
         {
             Exception error = null;
 
             await this.proxy.Use(
                 async (client) =>
                     {
-                        await client.GetErrorAsync();
+                        await client.GetAsyncError();
                     },
                 (ex) =>
                     {
                         error = ex;
                     });
 
-            Assert.IsNotNull(error);
+            Assert.IsInstanceOf<FaultException>(error);
         }
     }
 }

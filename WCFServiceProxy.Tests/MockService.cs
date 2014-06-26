@@ -5,18 +5,22 @@
 
     public class MockService : IMockService
     {
-        public async Task<string> GetDataAsync()
+        public string GetData()
         {
-            return await Task.Run(
-                async () =>
-                    {
-                        await Task.Delay(1000);
-
-                        return "Success";
-                    });
+            return "Success";
         }
 
-        public Task<string> GetErrorAsync()
+        public async Task<string> GetAsyncData()
+        {
+            return await Task.FromResult("Success");
+        }
+
+        public string GetError()
+        {
+            throw new FaultException();
+        }
+
+        public Task<string> GetAsyncError()
         {
             throw new FaultException();
         }
@@ -26,9 +30,15 @@
     public interface IMockService
     {
         [OperationContract]
-        Task<string> GetDataAsync();
+        string GetData();
 
         [OperationContract]
-        Task<string> GetErrorAsync();
+        Task<string> GetAsyncData();
+
+        [OperationContract]
+        string GetError();
+
+        [OperationContract]
+        Task<string> GetAsyncError();
     }
 }

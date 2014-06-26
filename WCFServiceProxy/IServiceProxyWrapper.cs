@@ -13,6 +13,35 @@
         /// Using statement for proxy.
         /// </summary>
         /// <param name="callback">The code block to execute.</param>
+        void Use(Action<TProxy> callback);
+
+        /// <summary>
+        /// Using statement for proxy.
+        /// </summary>
+        /// <param name="callback">The code block to execute.</param>
+        /// <param name="error">The error.</param>
+        void Use(Action<TProxy> callback, Action<Exception> error);
+
+        /// <summary>
+        /// Using statement for proxy.
+        /// </summary>
+        /// <param name="endPointConfigurationName">(Optional) The service endpoint configuration name. Uses <typeparamref name="TProxy" /> if not specified.</param>
+        /// <param name="callback">The code block to execute.</param>
+        void Use(string endPointConfigurationName, Action<TProxy> callback);
+
+        /// <summary>
+        /// Using statement for proxy.
+        /// </summary>
+        /// <param name="endPointConfigurationName">(Optional) The service endpoint configuration name. Uses <typeparamref name="TProxy" /> if not specified.</param>
+        /// <param name="callback">The code block to execute.</param>
+        /// <param name="error">The error callback.</param>
+        /// <exception cref="System.ArgumentNullException">endPointConfigurationName</exception>
+        void Use(string endPointConfigurationName, Action<TProxy> callback, Action<Exception> error);
+
+        /// <summary>
+        /// Using statement for proxy.
+        /// </summary>
+        /// <param name="callback">The code block to execute.</param>
         Task Use(Func<TProxy, Task> callback);
 
         /// <summary>
