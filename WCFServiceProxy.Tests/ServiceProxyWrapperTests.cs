@@ -49,13 +49,17 @@
         [Test]
         public void Use_WhenWrapperWorks_ShouldReturnClientAsParameter()
         {
+            var data = string.Empty;
+
             this.proxy.Use(
                 (client) =>
                 {
-                    client.GetData();
+                    data = client.GetData();
 
                     Assert.IsAssignableFrom<IMockService>(client);
                 });
+
+            Assert.AreEqual("Success", data);
         }
 
         [Test]
@@ -77,15 +81,19 @@
         }
 
         [Test]
-        public void UseAsync_WhenWrapperWorks_ShouldReturnClientAsParameter()
+        public async void UseAsync_WhenWrapperWorks_ShouldReturnClientAsParameter()
         {
-            this.proxy.Use(
+            var data = string.Empty;
+
+            await this.proxy.Use(
                 async (client) =>
                     {
-                        await client.GetAsyncData();
+                        data = await client.GetAsyncData();
 
                         Assert.IsAssignableFrom<IMockService>(client);
                     });
+
+            Assert.AreEqual("Success", data);
         }
 
         [Test]
@@ -104,6 +112,30 @@
                     });
 
             Assert.IsInstanceOf<FaultException>(error);
+        }
+
+        [Test]
+        public async void Configure_WhenConfigurationWorks_ShouldReturnResult()
+        {
+            var ran = false;
+
+            await this.proxy.Configure(
+                x =>
+                x.Endpoint.Address =
+                new EndpointAddress(
+                    new Uri("http://localhost"),
+                    x.Endpoint.Address.Identity,
+                    x.Endpoint.Address.Headers)).Use(
+                        async (client) =>
+                            {
+                                ran = true;
+
+                                Assert.That(
+                                    () => client.GetData(),
+                                    Throws.Exception.InstanceOf<CommunicationException>());
+                            });
+
+            Assert.IsTrue(ran, "Client action did not run");
         }
     }
 }

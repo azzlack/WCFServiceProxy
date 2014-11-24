@@ -11,12 +11,9 @@ Features:
 - Handles all types of exceptions
 - Error tracing
 
-This completely replaces the "Add Service Reference" functionality. 
-That means your WCF service must implement an interface, and the same interface must bu available for your client application. 
+This library works with the "Add Service Reference" functionality, as well as using a custom interface.
 
-### How to use
-This wrapper is intended to mimic a `using` statement.
-
+### How to use the factory
 ```csharp
 // The simplest way to use it
 ServiceProxyFactory.Create<IMyServiceClientInterface>().Use(
@@ -31,4 +28,9 @@ ServiceProxyFactory.Create<IMyServiceClientInterface>().Use(
 	}, (exception) => {
 		throw exception; // Do something if an error occurs
 	});
+```
+
+### Dependency Injection support
+```csharp
+
 ```

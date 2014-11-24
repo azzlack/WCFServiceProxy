@@ -3,12 +3,15 @@
   <metadata>
     <id>WCFServiceProxy</id>
     <title>WCF/SOAP Service Client Wrapper</title>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <authors>Ove Andersen</authors>
     <owners>EyeCatch</owners>
     <projectUrl>https://github.com/azzlack/WCFServiceProxy</projectUrl>
     <iconUrl>http://www.eyecatch.no/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>
+      Service proxy for consuming WCF/SOAP services.
+    </summary>
     <description>
       Service proxy for consuming WCF/SOAP services.
 
@@ -20,10 +23,10 @@
       * Handles all types of exceptions
       * Error tracing
 
-      This completely replaces the "Add Service Reference" functionality. That means your WCF service must implement an interface, and the same interface must bu available for your client application.
+      This library works with the "Add Service Reference" functionality, as well as using a custom interface.
     </description>
     <releaseNotes>
-      Updated to use .NET 4.5
+      Updated to better support ClientBase and async workflows
     </releaseNotes>
     <copyright>Copyright EyeCatch 2014</copyright>
     <tags>wcf soap service client proxy</tags>
