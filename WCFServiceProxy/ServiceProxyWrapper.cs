@@ -1,7 +1,6 @@
 ﻿namespace EyeCatch.WCF.ServiceProxy
 {
     using System;
-    using System.Diagnostics;
     using System.ServiceModel;
     using System.ServiceModel.Security;
     using System.Text;
@@ -137,9 +136,6 @@
                 message.AppendLine(exception.InnerException.StackTrace);
             }
 
-            // Trace error
-            Trace.TraceError(message.ToString());
-
             // Throw event if there is a handler registered
             if (this.ErrorOccured != null)
             {
@@ -200,11 +196,11 @@
 
                 throw;
             }
-            catch (ChannelTerminatedException ex)
+            catch (ActionNotSupportedException ex)
             {
                 error(ex);
 
-                channel.Abort(); // Possibly retry? 
+                channel.Abort();
             }
             catch (ServerTooBusyException ex)
             {

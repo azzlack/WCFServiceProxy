@@ -10,10 +10,10 @@
     <iconUrl>http://www.eyecatch.no/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>
-      Service proxy for consuming WCF/SOAP services.
+      PCL-compatible service proxy for consuming WCF/SOAP services.
     </summary>
     <description>
-      Service proxy for consuming WCF/SOAP services.
+      PCL-compatible service proxy for consuming WCF/SOAP services.
 
       This proxy solves some common problems when dealing with SOAP-based Windows Communication Foundation services.
 
@@ -26,7 +26,7 @@
       This library works with the "Add Service Reference" functionality, as well as using a custom interface.
     </description>
     <releaseNotes>
-      Updated to better support ClientBase and async workflows
+      Updated to better support ClientBase and async workflows and added PCL-compatiblity
     </releaseNotes>
     <copyright>Copyright EyeCatch 2014</copyright>
     <tags>wcf soap service client proxy</tags>
