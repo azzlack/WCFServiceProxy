@@ -3,6 +3,9 @@ WCF/SOAP Service Proxy
 
 Service proxy for consuming WCF/SOAP services.
 
+[![NuGet Version](https://img.shields.io/nuget/v/WCFServiceProxy.svg)](https://www.nuget.org/packages/WCFServiceProxy)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/WCFServiceProxy.svg)](https://www.nuget.org/packages/WCFServiceProxy)
+
 This proxy solves some common problems when dealing with SOAP-based Windows Communication Foundation services.
 
 Features:
