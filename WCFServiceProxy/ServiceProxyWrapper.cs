@@ -13,14 +13,9 @@
     internal class ServiceProxyWrapper<TProxy> : IServiceProxyWrapper<TProxy> where TProxy : class
     {
         /// <summary>
-        /// The channel factory
+        /// The base channel factory
         /// </summary>
         private readonly ChannelFactory<TProxy> channelFactory;
-
-        /// <summary>
-        /// The proxy
-        /// </summary>
-        private TProxy proxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceProxyWrapper{TProxy}"/> class.
@@ -37,8 +32,6 @@
         public ServiceProxyWrapper(string endpointConfigurationName)
         {
             this.channelFactory = new ChannelFactory<TProxy>(endpointConfigurationName);
-
-            this.proxy = channelFactory.CreateChannel();
         }
 
         /// <summary>
@@ -61,9 +54,6 @@
 
             // Configure channel
             action(this.channelFactory);
-
-            // Regenerate proxy
-            this.proxy = this.channelFactory.CreateChannel();
 
             return this;
         }
@@ -160,7 +150,7 @@
         /// <param name="error">The action to run when an error is encountered.</param>
         private async Task Run(Func<TProxy, Task> action, Action<Exception> error) 
         {
-            var channel = (IClientChannel)this.proxy;
+            var channel = (IClientChannel)this.channelFactory.CreateChannel();
 
             var success = false;
 
