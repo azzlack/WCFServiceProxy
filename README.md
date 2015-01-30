@@ -35,5 +35,7 @@ ServiceProxyFactory.Create<IMyServiceClientInterface>().Use(
 
 ### Dependency Injection support
 ```csharp
-
+// Using SimpleInjector
+// ErFrChannel is the interface for the service. Usually the same as the name attribute in your config file.
+container.RegisterWebApiRequest<IServiceProxyWrapper<ErFrChannel>>(ServiceProxyFactory.Create<ErFrChannel>);
 ```
