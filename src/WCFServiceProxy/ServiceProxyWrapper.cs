@@ -40,6 +40,18 @@
         public event EventHandler<ServiceProxyErrorEventArgs> ErrorOccured;
 
         /// <summary>
+        /// Gets the original proxy.
+        /// </summary>
+        /// <value>The original proxy.</value>
+        public TProxy Proxy
+        {
+            get
+            {
+                return this.channelFactory.CreateChannel();
+            }
+        }
+
+        /// <summary>
         /// Configures the wrapper for the spefified proxy.
         /// </summary>
         /// <param name="action">The code block to execute.</param>
@@ -140,7 +152,7 @@
         /// <param name="error">The action to run when an error is encountered.</param>
         private void Run(Action<TProxy> action, Action<Exception> error)
         {
-            this.Run(async (client) => action(client), error).ConfigureAwait(false);
+            Task.Run(() => this.Run(async (client) => action(client), error).ConfigureAwait(false)).Wait();
         }
 
         /// <summary>

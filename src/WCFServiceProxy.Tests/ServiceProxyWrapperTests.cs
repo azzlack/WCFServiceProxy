@@ -47,6 +47,14 @@
         }
 
         [Test]
+        public void Proxy_WhenWrapperWorks_ShouldReturnProxy()
+        {
+            var proxy = this.proxy.Proxy;
+
+            Assert.IsTrue(proxy is IMockService);
+        }
+
+        [Test]
         public void Use_WhenWrapperWorks_ShouldReturnClientAsParameter()
         {
             var data = string.Empty;

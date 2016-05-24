@@ -11,6 +11,12 @@
     public interface IServiceProxyWrapper<TProxy> where TProxy : class
     {
         /// <summary>
+        /// Gets the original proxy.
+        /// </summary>
+        /// <value>The original proxy.</value>
+        TProxy Proxy { get; }
+
+        /// <summary>
         /// Configures the wrapper for the spefified proxy.
         /// </summary>
         /// <param name="action">The code block to execute.</param>
