@@ -121,6 +121,25 @@
             return this.Run(callback, error);
         }
 
+        /// <summary>Runs the specified action and returns a value.</summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="action">The action.</param>
+        /// <returns>The result.</returns>
+        public async Task<T> Return<T>(Func<TProxy, Task<T>> action) where T : class
+        {
+            return await this.Run(action, (ex) => this.OnErrorOccured(typeof(TProxy), ex));
+        }
+
+        /// <summary>Runs the specified action and returns a value.</summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="action">The code block to execute.</param>
+        /// <param name="error">The error action.</param>
+        /// <returns>The result.</returns>
+        public async Task<T> Return<T>(Func<TProxy, Task<T>> action, Action<Exception> error) where T : class
+        {
+            return await this.Run(action, error);
+        }
+
         /// <summary>
         /// Called when [error occured].
         /// </summary>
@@ -160,7 +179,7 @@
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="error">The action to run when an error is encountered.</param>
-        private async Task Run(Func<TProxy, Task> action, Action<Exception> error) 
+        private async Task Run(Func<TProxy, Task> action, Action<Exception> error)
         {
             var channel = (IClientChannel)this.channelFactory.CreateChannel();
 
@@ -256,6 +275,110 @@
                     channel.Abort();
                 }
             }
+        }
+
+        /// <summary>
+        /// Runs the specified action.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="error">The action to run when an error is encountered.</param>
+        private async Task<T> Run<T>(Func<TProxy, Task<T>> action, Action<Exception> error) where T : class
+        {
+            T result = null;
+            var channel = (IClientChannel)this.channelFactory.CreateChannel();
+
+            var success = false;
+
+            try
+            {
+                result = await action((TProxy)channel);
+
+                channel.Close();
+
+                success = true;
+            }
+            catch (CommunicationObjectAbortedException ex)
+            {
+                /*
+                 * Object should be discarded if this is reached.   
+                 * Debugging discovered the following exception here: 
+                 * "Connection can not be established because it has been aborted"  
+                 */
+
+                throw;
+            }
+            catch (CommunicationObjectFaultedException ex)
+            {
+                error(ex);
+
+                channel.Abort();
+            }
+            catch (MessageSecurityException ex)
+            {
+                error(ex);
+
+                throw;
+            }
+            catch (ActionNotSupportedException ex)
+            {
+                error(ex);
+
+                channel.Abort();
+            }
+            catch (ServerTooBusyException ex)
+            {
+                error(ex);
+
+                channel.Abort(); // Possibly retry? 
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                error(ex);
+
+                channel.Abort(); // Possibly retry? 
+            }
+            catch (FaultException ex)
+            {
+                error(ex);
+
+                channel.Abort();
+            }
+            catch (CommunicationException ex)
+            {
+                error(ex);
+
+                channel.Abort();
+            }
+            catch (TimeoutException ex)
+            {
+                /* Sample error found during debug:  
+                 * 
+                 * The message could not be transferred within the allotted timeout of  
+                 * 00:01:00. There was no space available in the reliable channel's  
+                 * transfer window. The time allotted to this operation may have been a  
+                 * portion of a longer timeout. 
+                 */
+
+                error(ex);
+
+                channel.Abort();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // TODO: Handle this duplex action exception. Occurs when client disappears.   
+                // Source: http://stackoverflow.com/questions/1427926/detecting-client-death-in-wcf-duplex-contracts/1428238#1428238 
+
+                error(ex);
+            }
+            finally
+            {
+                if (!success)
+                {
+                    channel.Abort();
+                }
+            }
+
+            return result;
         }
     }
 }

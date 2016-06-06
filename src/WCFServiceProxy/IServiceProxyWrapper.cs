@@ -48,5 +48,18 @@
         /// <param name="callback">The code block to execute.</param>
         /// <param name="error">The error action.</param>
         Task Use(Func<TProxy, Task> callback, Action<Exception> error);
+
+        /// <summary>
+        /// Runs the specified action and returns a value.
+        /// </summary>
+        /// <param name="action">The code block to execute.</param>
+        Task<T> Return<T>(Func<TProxy, Task<T>> action) where T : class;
+
+        /// <summary>
+        /// Runs the specified action and returns a value.
+        /// </summary>
+        /// <param name="action">The code block to execute.</param>
+        /// <param name="error">The error action.</param>
+        Task<T> Return<T>(Func<TProxy, Task<T>> action, Action<Exception> error) where T : class;
     }
 }

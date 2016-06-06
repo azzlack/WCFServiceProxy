@@ -18,7 +18,7 @@
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            this.serviceHost = new ServiceHost(typeof(MockService), new Uri("http://localhost:80/Temporary_Listen_Addresses/ServiceProxyWrapperTests"));
+            this.serviceHost = new ServiceHost(typeof(MockService), new Uri("http://localhost:59123/Temporary_Listen_Addresses/ServiceProxyWrapperTests"));
             
             var metadataBehavior = new ServiceMetadataBehavior
                                {
@@ -118,6 +118,33 @@
                     {
                         error = ex;
                     });
+
+            Assert.IsInstanceOf<FaultException>(error);
+        }
+
+        [Test]
+        public async void Return_WhenWrapperWorks_ShouldReturnResult()
+        {
+            var result = await this.proxy.Return(
+                async (client) =>
+                {
+                    return await client.GetAsyncData();
+                });
+
+            Assert.AreEqual("Success", result);
+        }
+
+        [Test]
+        public async void Return_WhenWrapperThrowsError_ShouldEnterErrorCallback()
+        {
+            Exception error = null;
+
+            var result = await this.proxy.Return(
+                async (client) => await client.GetAsyncError(),
+                (ex) =>
+                {
+                    error = ex;
+                });
 
             Assert.IsInstanceOf<FaultException>(error);
         }
