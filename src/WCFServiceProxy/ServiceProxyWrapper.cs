@@ -43,25 +43,19 @@
         /// Gets the original proxy.
         /// </summary>
         /// <value>The original proxy.</value>
-        public TProxy Proxy
-        {
-            get
-            {
-                return this.channelFactory.CreateChannel();
-            }
-        }
+        public TProxy Proxy => this.channelFactory.CreateChannel();
 
-        /// <summary>
-        /// Configures the wrapper for the spefified proxy.
-        /// </summary>
+        /// <summary>Configures the wrapper for the spefified proxy.</summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when one or more required arguments are null.
+        /// </exception>
         /// <param name="action">The code block to execute.</param>
         /// <returns>The configured wrapper.</returns>
-        /// <exception cref="System.ArgumentNullException">action</exception>
         public IServiceProxyWrapper<TProxy> Configure(Action<ChannelFactory<TProxy>> action)
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
 
             // Configure channel
@@ -76,46 +70,50 @@
         /// <param name="action">The code block to execute.</param>
         public void Use(Action<TProxy> action)
         {
-            this.Run(action, null);
+            this.Run(action,
+                (ex) =>
+                {
+                    throw ex;
+                });
         }
 
-        /// <summary>
-        /// Using statement for action.
-        /// </summary>
+        /// <summary>Using statement for action.</summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when one or more required arguments are null.
+        /// </exception>
         /// <param name="action">The code block to execute.</param>
         /// <param name="error">The error action.</param>
-        /// <exception cref="System.ArgumentNullException">endPointConfigurationName</exception>
         public void Use(Action<TProxy> action, Action<Exception> error)
         {
             if (action == null)
             {
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             }
 
             if (error == null)
             {
-                throw new ArgumentNullException("error");
+                throw new ArgumentNullException(nameof(error));
             }
 
             this.Run(action, error);
         }
 
-        /// <summary>
-        /// Using statement for proxy.
-        /// </summary>
+        /// <summary>Using statement for proxy.</summary>
         /// <param name="callback">The code block to execute.</param>
-        /// <returns>Task.</returns>
+        /// <returns>A task.</returns>
         public Task Use(Func<TProxy, Task> callback)
         {
-            return this.Use(callback, (ex) => this.OnErrorOccured(typeof(TProxy), ex));
+            return this.Use(callback,
+                (ex) =>
+                {
+                    throw ex;
+                });
         }
 
-        /// <summary>
-        /// Using statement for proxy.
-        /// </summary>
+        /// <summary>Using statement for proxy.</summary>
         /// <param name="callback">The code block to execute.</param>
         /// <param name="error">The error action.</param>
-        /// <returns>Task.</returns>
+        /// <returns>A task.</returns>
         public Task Use(Func<TProxy, Task> callback, Action<Exception> error)
         {
             return this.Run(callback, error);
@@ -127,7 +125,12 @@
         /// <returns>The result.</returns>
         public async Task<T> Return<T>(Func<TProxy, Task<T>> action) where T : class
         {
-            return await this.Run(action, (ex) => this.OnErrorOccured(typeof(TProxy), ex));
+            return await this.Run(
+                action,
+                (ex) =>
+                    {
+                        throw ex;
+                    });
         }
 
         /// <summary>Runs the specified action and returns a value.</summary>

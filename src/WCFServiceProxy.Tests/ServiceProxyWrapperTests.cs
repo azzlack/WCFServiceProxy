@@ -135,11 +135,28 @@
         }
 
         [Test]
+        public async void Return_WhenWrapperThrowsError_ShouldThrowException()
+        {
+            Exception error = null;
+
+            try
+            {
+                await this.proxy.Return(async (client) => await client.GetAsyncError());
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+            }
+
+            Assert.IsNotNull(error);
+        }
+
+        [Test]
         public async void Return_WhenWrapperThrowsError_ShouldEnterErrorCallback()
         {
             Exception error = null;
 
-            var result = await this.proxy.Return(
+            await this.proxy.Return(
                 async (client) => await client.GetAsyncError(),
                 (ex) =>
                 {
